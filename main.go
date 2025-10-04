@@ -4,20 +4,11 @@ import (
 	"chitchat/config"
 	"chitchat/services"
 	"chitchat/urls"
-	"fmt"
 
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 )
 
 func main() {
-	//loading env files
-	dotenvErr := godotenv.Load()
-
-	if dotenvErr != nil {
-		fmt.Println("Could not load env file : ", dotenvErr)
-		return
-	}
 	//Connecting MYSQL database
 	config.ConnectMYSQL()
 	//Closing mysql connection when shutting down
