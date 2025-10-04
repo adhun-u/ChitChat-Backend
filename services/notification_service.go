@@ -18,7 +18,7 @@ var client *messaging.Client
 func InitializeFirebaseApp() {
 
 	//Getting options to create firebase app with credentials
-	options := option.WithCredentialsFile("service.json")
+	options := option.WithCredentialsFile("/etc/secrets/service.json")
 	//Initializing firebase
 	app, initErr := firebase.NewApp(context.TODO(), nil, options)
 
