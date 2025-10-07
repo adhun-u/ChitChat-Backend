@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"strconv"
+	"time"
 
 	firebase "firebase.google.com/go/v4"
 	"firebase.google.com/go/v4/messaging"
@@ -227,17 +228,20 @@ func SendCallNotification(
 	notificationId string,
 ) {
 	topic := "userCall" + callerId + calleeId
+
+	currentTime := time.Now()
 	//Creating payload for sending notification with details
 	newMessage := &messaging.Message{
 		Token: topic,
 		Data: map[string]string{
-			"callType":      callType,
-			"type":          "call",
-			"callerName":    callerName,
-			"callerId":      callerId,
-			"currentUserId": calleeId,
-			"imageUrl":      imageUrl,
-			"id":            notificationId,
+			"callType":         callType,
+			"type":             "call",
+			"callerName":       callerName,
+			"callerId":         callerId,
+			"currentUserId":    calleeId,
+			"imageUrl":         imageUrl,
+			"id":               notificationId,
+			"notificationTime": currentTime.Format(time.RFC3339Nano),
 		},
 	}
 
@@ -255,15 +259,16 @@ func SendGroupCallNotification(groupId string, groupName string, groupProfilePic
 
 	//Creating the topic to send notification to all who subscribed to this topic
 	topic := "groupCall" + groupId
-
+	currentTime := time.Now()
 	message := &messaging.Message{
 		Topic: topic,
 		Data: map[string]string{
-			"title":    groupName,
-			"imageUrl": groupProfilePic,
-			"groupId":  groupId,
-			"callType": callType,
-			"type":     "groupCall",
+			"title":            groupName,
+			"imageUrl":         groupProfilePic,
+			"groupId":          groupId,
+			"callType":         callType,
+			"type":             "groupCall",
+			"notificationTime": currentTime.Format(time.RFC3339Nano),
 		},
 	}
 
