@@ -1,9 +1,11 @@
 package socket
 
 import (
+	"chitchat/config"
 	"chitchat/helpers"
 	"chitchat/models"
 	"chitchat/services"
+	"context"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -11,6 +13,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 // Upgrader for upgrading normal http connection to websocket connection
@@ -94,6 +97,8 @@ func ConnectCallSocket(ctx *gin.Context) {
 			signal.Mutex.Unlock()
 			//Sending the notification to callee
 			sendCallNotification(signal.CallerName, signal.CallerId, signal.CalleeId, signal.CallType, profilePic)
+			//Saving call history
+			saveCallHistory(signal.CallerId, signal.CalleeId, signal.CallType)
 		}
 		//For getting the offer that caller created when callee asks
 		signal.Mutex.RLock()
@@ -196,4 +201,23 @@ func sendCallNotification(callerName string, callerId int, calleeId int, callTyp
 		profilePic,
 		notificationId,
 	)
+}
+
+// For saving call history
+func saveCallHistory(callerId int, calleeId int, callType string) {
+
+	//Doc to insert
+	docToInsert := bson.M{
+		"callerId": callerId,
+		"calleeId": calleeId,
+		"callType": callType,
+	}
+
+	callHistoryCollec := config.MongoDB.Collection("callHistories")
+
+	_, insertErr := callHistoryCollec.InsertOne(context.TODO(), docToInsert)
+
+	if insertErr != nil {
+		fmt.Println("Something went wrong while inserting call history")
+	}
 }
