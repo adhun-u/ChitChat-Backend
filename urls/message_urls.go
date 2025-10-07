@@ -33,6 +33,8 @@ func RegisterMessageUrls(route *gin.Engine) {
 		messageRoute.DELETE("/file", middlewares.MiddleWare, message.DeleteFileController)
 		//To connect call communication websocket
 		messageRoute.GET("/call/ws", socket.ConnectCallSocket)
+		//To fetch call histories
+		messageRoute.GET("/callHistories", middlewares.MiddleWare, message.FetchCallHistories)
 	}
 
 }

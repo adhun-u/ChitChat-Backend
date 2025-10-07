@@ -77,3 +77,12 @@ type CandidateKey struct {
 	CallerId int
 	CalleeId int
 }
+
+//For fetching call histories
+type CallHistoryModel struct {
+	ChatId   string `json:"chatId" bson:"chatId"`
+	CallerId int    `json:"callerId" bson:"callerId"`
+	CalleeId int    `json:"calleeId" bson:"callerId"`
+	CallType string `json:"callType" bson:"callType"`
+	CallTime string `json:"callTime" bson:"callTime"`
+}
