@@ -205,7 +205,6 @@ func handleMessages(chatConn map[messagemodel.ChatKey]*websocket.Conn, chat *mes
 				return sendingErr
 			}
 		} else {
-
 			//Saving message
 			saveMessageAsTemp((*chat))
 
