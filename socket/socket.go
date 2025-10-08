@@ -13,7 +13,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
-	"go.mongodb.org/mongo-driver/bson"
 )
 
 // Initializing the upgrader for upgrading http to websockets
@@ -206,13 +205,9 @@ func handleMessages(chatConn map[messagemodel.ChatKey]*websocket.Conn, chat *mes
 				return sendingErr
 			}
 		} else {
-			if chat.Type == "audioCall" || chat.Type == "videoCall" {
-				//Saving call history
-				saveCallHistory(chat.ChatId, chat.SenderId, chat.ReceiverId, chat.Type, chat.Time)
-			} else {
-				//Saving message
-				saveMessageAsTemp((*chat))
-			}
+
+			//Saving message
+			saveMessageAsTemp((*chat))
 
 		}
 		//Sending notification to receiver's device
@@ -286,26 +281,5 @@ func seenIndication(senderId int, receiverId int) {
 		conn.WriteJSON(gin.H{"isSeen": true, "type": "seen", "senderId": senderId, "receiverId": receiverId})
 	} else if onlineConn, isInOnlineConn := onlineConn[senderId]; isInOnlineConn {
 		onlineConn.WriteJSON(gin.H{"isSeen": true, "type": "seen", "senderId": senderId, "receiverId": receiverId})
-	}
-}
-
-// For saving call history
-func saveCallHistory(chatId string, callerId int, calleeId int, callType string, callTime string) {
-
-	//Doc to insert
-	docToInsert := bson.M{
-		"chatId":   chatId,
-		"callerId": callerId,
-		"calleeId": calleeId,
-		"callType": callType,
-		"callTime": callTime,
-	}
-
-	callHistoryCollec := config.MongoDB.Collection("callHistories")
-
-	_, insertErr := callHistoryCollec.InsertOne(context.TODO(), docToInsert)
-
-	if insertErr != nil {
-		fmt.Println("Something went wrong while inserting call history")
 	}
 }

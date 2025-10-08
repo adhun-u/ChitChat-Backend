@@ -110,6 +110,15 @@ func FetchFriendsWithLastMessageController(ctx *gin.Context) {
 				"$and": []bson.M{
 					{"senderId": eachAddedUser.FriendId},
 					{"receiverId": currentUserId},
+					{"$and": []bson.M{
+						{"$ne": bson.M{
+							"type": "audioCall",
+						}}, {
+							"$ne": bson.M{
+								"type": "videoCall",
+							},
+						},
+					}},
 				},
 			}
 			//Selecting single field
