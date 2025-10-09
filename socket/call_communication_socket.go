@@ -74,9 +74,9 @@ func ConnectCallSocket(ctx *gin.Context) {
 	//Creating a user with the connection
 	callers[currentUserId] = conn
 	callSockMutext.Unlock()
-
+	fmt.Println("Call socket connected")
 	for {
-		fmt.Println("Call socket connected")
+
 		var signal models.CallSignal
 
 		//Reading all data as json

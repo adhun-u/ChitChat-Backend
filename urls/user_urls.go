@@ -38,5 +38,7 @@ func RegisterUserUrls(route *gin.Engine) {
 		userRoute.DELETE("remove", middlewares.MiddleWare, user.RemoveUserController)
 		//For changing last message time
 		userRoute.PATCH("lastMessageTime", middlewares.MiddleWare, user.ChangeLastMessageController)
+		//For changing fcm token
+		userRoute.PUT("changeFCMToken", middlewares.MiddleWare, user.ChangeFCMTokenController)
 	}
 }

@@ -230,8 +230,7 @@ func SendCallNotification(
 ) {
 	topic := "userCall" + callerId + calleeId
 
-	fmt.Println("caller id : ", callerId)
-	fmt.Println("Callee id : ", calleeId)
+	fmt.Println("Entered in send call notification function in notification service")
 	currentTime := time.Now()
 	//Creating payload for sending notification with details
 	newMessage := &messaging.Message{
