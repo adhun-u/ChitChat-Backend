@@ -50,19 +50,27 @@ func AcceptRequest(ctx *gin.Context) {
 
 	var currentUser usermodel.UserModel
 	var requestedUser usermodel.UserModel
+
 	//Retrieving the current user details
-	config.GORM.
+	currentFetchErr := config.GORM.
 		Table("userdetails").
 		Select("id", "username", "profilepic", "bio", "deviceToken").
 		Where("id=?", currentUserId).
-		First(&currentUser)
+		First(&currentUser).Error
 	//Retrieving the requested user details
-	config.GORM.
+	oppositeUserFetchErr := config.GORM.
 		Table("userdetails").
 		Select("id", "username", "profilepic", "bio", "deviceToken").
 		Where("id=?", acceptRequestModel.UserId).
-		First(&requestedUser)
+		First(&requestedUser).Error
 
+	if oppositeUserFetchErr != nil || currentFetchErr != nil {
+		helpers.SendMessageAsJson(ctx, "Something went wrong", http.StatusInternalServerError)
+		return
+	}
+
+	fmt.Println("Current user id and token : ", currentUser.UserId, currentUser.DeviceToken)
+	fmt.Println("Opposite user id and token : ", requestedUser.UserId, requestedUser.DeviceToken)
 	friendsCollec := config.MongoDB.Collection("friends")
 	requestUsersCollec := config.MongoDB.Collection("requestedUsers")
 

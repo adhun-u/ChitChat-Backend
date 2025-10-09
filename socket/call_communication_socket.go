@@ -85,8 +85,6 @@ func ConnectCallSocket(ctx *gin.Context) {
 			fmt.Println("Call socket read error : ", readErr)
 			return
 		}
-
-		fmt.Println("Type : ", signal.Type)
 		//If caller created an offer to call callee , then sending the callee that caller is calling
 		if signal.Type == "CREATE-OFFER" {
 			//Saving the offer to get the offer when callee enters
@@ -94,6 +92,7 @@ func ConnectCallSocket(ctx *gin.Context) {
 			offers[currentUserId] = signal.Data
 			signal.Mutex.Unlock()
 			//Sending the notification to callee
+			fmt.Println("Sent notification to call")
 			sendCallNotification(signal.CallerName, signal.CallerId, signal.CalleeId, signal.CallType, profilePic)
 		}
 		//For getting the offer that caller created when callee asks
@@ -123,7 +122,6 @@ func ConnectCallSocket(ctx *gin.Context) {
 		}
 		// For saving the candidates
 		if signal.Type == "POST-CANDIDATE" {
-			fmt.Println("ADDED : ", signal.Data)
 			signal.Mutex.Lock()
 			candidates[models.CandidateKey{CallerId: signal.CallerId, CalleeId: signal.CalleeId}] = append(candidates[models.CandidateKey{CallerId: signal.CallerId, CalleeId: signal.CalleeId}], models.Candidate{
 				Type: signal.Type,
@@ -188,6 +186,7 @@ func ConnectCallSocket(ctx *gin.Context) {
 
 // For sending calling notification
 func sendCallNotification(callerName string, callerId int, calleeId int, callType string, profilePic string) {
+	fmt.Println("entered in send call notification function in socket")
 	notificationId := fmt.Sprintf("%d%d", callerId, calleeId)
 	services.SendCallNotification(
 		callType,

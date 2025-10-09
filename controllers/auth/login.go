@@ -27,6 +27,8 @@ func LoginWithEmail(ctx *gin.Context) {
 		UserId   int64  `gorm:"column:id"`
 		Password string `gorm:"column:password"`
 	}
+
+	fmt.Println("Email : ", loginCredentials.Email)
 	var userdata UserDetails
 	//Getting password from table
 	dbErr := config.GORM.
@@ -34,6 +36,8 @@ func LoginWithEmail(ctx *gin.Context) {
 		Select("password,id").
 		Where("email=?", loginCredentials.Email).
 		Pluck("password", &userdata).Error
+
+	fmt.Println("Got details : ", userdata.UserId)
 
 	if dbErr != nil {
 		fmt.Println("Login error in login/email : ", dbErr)

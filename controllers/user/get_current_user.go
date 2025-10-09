@@ -16,6 +16,8 @@ func GetCurrentUserController(ctx *gin.Context) {
 	//Getting userid in middleware
 	userId, exist := ctx.Get("userId")
 
+	fmt.Println("Got user id : ", userId)
+
 	if !exist {
 		helpers.SendMessageAsJson(ctx, "Provide valid token", http.StatusNotAcceptable)
 		return

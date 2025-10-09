@@ -68,7 +68,7 @@ func RemoveUserController(ctx *gin.Context) {
 		//Getting current user device token as well as removed user's
 		var deviceTokens []string
 		var userIds = []int{
-			currentUserId.(int), removeUserId,
+			int(currentUserId.(float64)), removeUserId,
 		}
 		findErr := config.
 			GORM.
@@ -83,10 +83,10 @@ func RemoveUserController(ctx *gin.Context) {
 		}
 
 		//Unsubscribing the each to not get call and message notifications
-		services.UnSubscribeToUserCallTopic(deviceTokens[0], removeUserId, currentUserId.(int))
-		services.UnSubscribeFromUserMessageTopic(deviceTokens[0], removeUserId, currentUserId.(int))
-		services.UnSubscribeToUserCallTopic(deviceTokens[1], currentUserId.(int), removeUserId)
-		services.UnSubscribeFromUserMessageTopic(deviceTokens[1], currentUserId.(int), removeUserId)
+		services.UnSubscribeToUserCallTopic(deviceTokens[0], removeUserId, int(currentUserId.(float64)))
+		services.UnSubscribeFromUserMessageTopic(deviceTokens[0], removeUserId, int(currentUserId.(float64)))
+		services.UnSubscribeToUserCallTopic(deviceTokens[1], int(currentUserId.(float64)), removeUserId)
+		services.UnSubscribeFromUserMessageTopic(deviceTokens[1], int(currentUserId.(float64)), removeUserId)
 	} else {
 		helpers.SendMessageAsJson(ctx, "Invalid user", http.StatusNotFound)
 	}

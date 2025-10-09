@@ -113,7 +113,8 @@ func UnSubscribeFromUserMessageTopic(deviceToken string, userId int, anotherUser
 
 func SubscribeToUserCallTopic(deviceToken string, userId int, anotherUserId int) {
 	topic := "userCall" + strconv.Itoa(userId) + strconv.Itoa(anotherUserId)
-
+	fmt.Println("Call topic : ", topic)
+	fmt.Println("Device token : ", deviceToken)
 	_, subErr := client.SubscribeToTopic(context.TODO(), []string{deviceToken}, topic)
 
 	if subErr != nil {
@@ -229,6 +230,8 @@ func SendCallNotification(
 ) {
 	topic := "userCall" + callerId + calleeId
 
+	fmt.Println("caller id : ", callerId)
+	fmt.Println("Callee id : ", calleeId)
 	currentTime := time.Now()
 	//Creating payload for sending notification with details
 	newMessage := &messaging.Message{
