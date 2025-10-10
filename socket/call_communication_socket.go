@@ -1,6 +1,7 @@
 package socket
 
 import (
+	"chitchat/config"
 	"chitchat/helpers"
 	"chitchat/models"
 	"chitchat/services"
@@ -76,9 +77,7 @@ func ConnectCallSocket(ctx *gin.Context) {
 	callSockMutext.Unlock()
 	fmt.Println("Call socket connected")
 	for {
-
 		var signal models.CallSignal
-
 		//Reading all data as json
 		readErr := conn.ReadJSON(&signal)
 		if readErr != nil {
@@ -187,13 +186,25 @@ func ConnectCallSocket(ctx *gin.Context) {
 // For sending calling notification
 func sendCallNotification(callerName string, callerId int, calleeId int, callType string, profilePic string) {
 	fmt.Println("entered in send call notification function in socket")
-	notificationId := fmt.Sprintf("%d%d", callerId, calleeId)
+
+	var token string
+
+	findinErr := config.
+		GORM.
+		Table("userdetails").
+		Select("deviceToken").
+		Where("id=?", calleeId).
+		Scan(&token).Error
+
+	if findinErr != nil {
+		return
+	}
 	services.SendCallNotification(
+		token,
 		callType,
 		callerName,
-		strconv.Itoa(callerId),
-		strconv.Itoa(calleeId),
+		callerId,
+		calleeId,
 		profilePic,
-		notificationId,
 	)
 }

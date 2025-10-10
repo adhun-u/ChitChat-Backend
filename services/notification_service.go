@@ -9,6 +9,7 @@ import (
 
 	firebase "firebase.google.com/go/v4"
 	"firebase.google.com/go/v4/messaging"
+	"github.com/google/uuid"
 	"google.golang.org/api/option"
 )
 
@@ -62,6 +63,7 @@ func SendNotification(deviceToken string, title string, body string, imageUrl st
 
 // For sending when message notification when new message comes
 func SendMessageNotification(userId int, anotherUserId int, username string, profilePic string, messageModel messagemodel.MessageModel) {
+	fmt.Println("Entered in message notification")
 	//Creating the topic to send notifications
 	topic := "userMessage" + strconv.Itoa(userId) + strconv.Itoa(anotherUserId)
 	newMessage := &messaging.Message{
@@ -221,31 +223,31 @@ func SendGroupMessageNotification(groupId string, title string, body string, ima
 
 // For sending call notification when someone calls
 func SendCallNotification(
+	token string,
 	callType string,
 	callerName string,
-	callerId string,
-	calleeId string,
+	callerId int,
+	calleeId int,
 	imageUrl string,
-	notificationId string,
 ) {
-	topic := "userCall" + callerId + calleeId
-
-	fmt.Println("Entered in send call notification function in notification service")
+	notificationId := uuid.NewString()
 	currentTime := time.Now()
 	//Creating payload for sending notification with details
 	newMessage := &messaging.Message{
-		Token: topic,
+		Token: token,
 		Data: map[string]string{
 			"callType":         callType,
 			"type":             "call",
 			"callerName":       callerName,
-			"callerId":         callerId,
-			"currentUserId":    calleeId,
+			"callerId":         strconv.Itoa(callerId),
+			"currentUserId":    strconv.Itoa(calleeId),
 			"imageUrl":         imageUrl,
 			"id":               notificationId,
 			"notificationTime": currentTime.Format(time.RFC3339Nano),
 		},
 	}
+
+	fmt.Println(newMessage.Data)
 
 	_, resErr := client.Send(context.TODO(), newMessage)
 
@@ -258,7 +260,6 @@ func SendCallNotification(
 
 // For sending group call notification
 func SendGroupCallNotification(groupId string, groupName string, groupProfilePic string, callType string) {
-
 	//Creating the topic to send notification to all who subscribed to this topic
 	topic := "groupCall" + groupId
 	currentTime := time.Now()

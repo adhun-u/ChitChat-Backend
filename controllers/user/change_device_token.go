@@ -37,7 +37,6 @@ func ChangeFCMTokenController(ctx *gin.Context) {
 
 	if updateErr != nil {
 		helpers.SendMessageAsJson(ctx, "Something went wrong while updating token", http.StatusInternalServerError)
-		return
 	} else {
 		helpers.SendMessageAsJson(ctx, "Updated successfully", http.StatusOK)
 	}
