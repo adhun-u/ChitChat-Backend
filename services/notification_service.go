@@ -113,30 +113,6 @@ func UnSubscribeFromUserMessageTopic(deviceToken string, userId int, anotherUser
 	}
 }
 
-func SubscribeToUserCallTopic(deviceToken string, userId int, anotherUserId int) {
-	topic := "userCall" + strconv.Itoa(userId) + strconv.Itoa(anotherUserId)
-	fmt.Println("Call topic : ", topic)
-	fmt.Println("Device token : ", deviceToken)
-	_, subErr := client.SubscribeToTopic(context.TODO(), []string{deviceToken}, topic)
-
-	if subErr != nil {
-		fmt.Println("user call subscribing error : ", subErr)
-		return
-	}
-}
-
-func UnSubscribeToUserCallTopic(deviceToken string, userId int, anotherUserId int) {
-	topic := "userCall" + strconv.Itoa(userId) + strconv.Itoa(anotherUserId)
-
-	_, unSubErr := client.UnsubscribeFromTopic(context.TODO(), []string{deviceToken}, topic)
-
-	if unSubErr != nil {
-		fmt.Println("Unsub error in user calls : ", unSubErr)
-		return
-	}
-
-}
-
 // For subscribing a user to a topic to get group messages as notifications
 func SubscribeUserToGroupMessageTopic(deviceToken string, groupId string) {
 	//Creating a topic for a group to subscribe to get notifications

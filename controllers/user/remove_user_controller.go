@@ -82,10 +82,10 @@ func RemoveUserController(ctx *gin.Context) {
 			return
 		}
 
-		//Unsubscribing the each to not get call and message notifications
-		services.UnSubscribeToUserCallTopic(deviceTokens[0], removeUserId, int(currentUserId.(float64)))
+		//Unsubscribing the each to not get message notifications
+
 		services.UnSubscribeFromUserMessageTopic(deviceTokens[0], removeUserId, int(currentUserId.(float64)))
-		services.UnSubscribeToUserCallTopic(deviceTokens[1], int(currentUserId.(float64)), removeUserId)
+
 		services.UnSubscribeFromUserMessageTopic(deviceTokens[1], int(currentUserId.(float64)), removeUserId)
 	} else {
 		helpers.SendMessageAsJson(ctx, "Invalid user", http.StatusNotFound)

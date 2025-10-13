@@ -83,6 +83,8 @@ func AddMemberController(ctx *gin.Context) {
 			fmt.Println("Finding user device token error while adding : ", findErr)
 			return
 		}
+		fmt.Println("Device token : ", deviceToken)
+		fmt.Println(ctx.Query("groupId"))
 		services.SubscribeUserToGroupMessageTopic(deviceToken, ctx.Query("groupId"))
 		services.SubscribeToGroupCallTopic(deviceToken, ctx.Query("groupId"))
 	}

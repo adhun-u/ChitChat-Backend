@@ -63,9 +63,11 @@ func GroupCallsController(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"message": "Room created", "token": jwtToken})
 
 	//Sending notification to all group members
-	if _, ok := GroupCalls[groupCallInfo.GroupId]; !ok {
+	if isInCall, ok := GroupCalls[groupCallInfo.GroupId]; !ok || !isInCall {
 		GroupCalls[groupCallInfo.GroupId] = true
 		services.SendGroupCallNotification(groupCallInfo.GroupId, groupCallInfo.GroupName, groupCallInfo.GroupProfilePic, groupCallInfo.CallType)
+	} else {
+		fmt.Println("The group is in call")
 	}
 }
 

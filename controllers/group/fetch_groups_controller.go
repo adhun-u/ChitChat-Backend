@@ -12,6 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -90,8 +91,11 @@ func FetchGroupController(ctx *gin.Context) {
 	}
 
 	for _, groupIdModel := range groupIds {
+
 		var groupDetails models.FetchGroupModel
 		groupId, objIdConvErr := primitive.ObjectIDFromHex(groupIdModel.GroupId)
+
+		fmt.Println(groupId)
 
 		if objIdConvErr != nil {
 			fmt.Println("Object id conversion error : ", objIdConvErr)
@@ -107,9 +111,9 @@ func FetchGroupController(ctx *gin.Context) {
 
 		cursorErr := fetchGroupRes.Decode(&groupDetails)
 
-		if cursorErr != nil {
-			fmt.Println("Group fetching cursor error : ", cursorErr)
-			helpers.SendMessageAsJson(ctx, "Something went wrong while fetching groups", http.StatusInternalServerError)
+		if cursorErr != mongo.ErrNoDocuments && cursorErr != nil {
+
+			helpers.SendMessageAsJson(ctx, "Something went wrong", http.StatusInternalServerError)
 			return
 		}
 		groups = append(groups, groupDetails)

@@ -126,10 +126,9 @@ func AcceptRequest(ctx *gin.Context) {
 	services.SendNotification(requestedUser.DeviceToken, currentUser.Username, "Accepted your request", currentUser.ProfilePic)
 	ctx.JSON(http.StatusOK, gin.H{"message": "Accepted", "requestedUserId": requestedUser.UserId})
 
-	//Subscribing accepted user to call and message topic to get notifications
+	//Subscribing accepted user to message topic to get notifications
 	services.SubscribeToUserMessageTopic(requestedUser.DeviceToken, currentUser.UserId, requestedUser.UserId)
-	services.SubscribeToUserCallTopic(requestedUser.DeviceToken, currentUser.UserId, requestedUser.UserId)
-	//Subscribing current user to accepted user's topic to get call and message notifications
+	//Subscribing current user to accepted user's topic to get message notifications
 	services.SubscribeToUserMessageTopic(currentUser.DeviceToken, requestedUser.UserId, currentUser.UserId)
-	services.SubscribeToUserCallTopic(currentUser.DeviceToken, requestedUser.UserId, currentUser.UserId)
+
 }
